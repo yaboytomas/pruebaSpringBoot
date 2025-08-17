@@ -18,6 +18,16 @@ public class Usuario {
     private String contrasena;
     private String rol; //  "cliente" / "administrador"
 
+    /*
+     * tabla rol 
+     * id
+     * nombre
+     * redirect/path
+     * activio
+     */
+
+
+
     // Getters and Setters
     public Long getId() {
         return id;
