@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sabor Gourmet - Nueva Reserva</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/cliente/home}">
+                <i class="fas fa-utensils"></i> Sabor Gourmet
+            </a>
+            <div class="navbar-nav ms-auto">
+                <span class="navbar-text me-3">
+                    <i class="fas fa-user"></i> 
+                    <span th:text="${session.usuario?.nombre}">Cliente</span>
+                </span>
+                <a class="nav-link" th:href="@{/logout}">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a th:href="@{/cliente/home}">
+                        <i class="fas fa-home"></i> Inicio
+                    </a>
+                </li>
+                <li class="breadcrumb-item active">
+                    <i class="fas fa-calendar-plus"></i> Nueva Reserva
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Page Header -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card bg-success text-white mb-4">
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            <i class="fas fa-calendar-plus"></i> Nueva Reserva
+                        </h1>
+                        <p class="card-text">Reserva tu mesa en Sabor Gourmet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error Message -->
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span th:text="${error}">Error message</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- Reservation Form -->
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <div class="card shadow">
+                    <div class="card-header bg-white">
+                        <h5 class="mb-0">
+                            <i class="fas fa-form"></i> Datos de la Reserva
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <form th:action="@{/reservas/crear}" method="post">
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="fecha" class="form-label">
+                                        <i class="fas fa-calendar"></i> Fecha
+                                    </label>
+                                    <input type="date" class="form-control" id="fecha" name="fecha" required>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="hora" class="form-label">
+                                        <i class="fas fa-clock"></i> Hora
+                                    </label>
+                                    <input type="time" class="form-control" id="hora" name="hora" required>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="numeroPersonas" class="form-label">
+                                        <i class="fas fa-users"></i> Número de Personas
+                                    </label>
+                                    <select class="form-select" id="numeroPersonas" name="numeroPersonas" required>
+                                        <option value="">Selecciona...</option>
+                                        <option value="1">1 Persona</option>
+                                        <option value="2">2 Personas</option>
+                                        <option value="3">3 Personas</option>
+                                        <option value="4">4 Personas</option>
+                                        <option value="5">5 Personas</option>
+                                        <option value="6">6 Personas</option>
+                                        <option value="7">7 Personas</option>
+                                        <option value="8">8 Personas</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-6 mb-3">
+                                    <label for="mesaId" class="form-label">
+                                        <i class="fas fa-table"></i> Mesa
+                                    </label>
+                                    <select class="form-select" id="mesaId" name="mesaId" required>
+                                        <option value="">Selecciona una mesa...</option>
+                                        <option th:each="mesa : ${mesas}" th:value="${mesa.id}" th:text="'Mesa ' + ${mesa.numero} + ' (Capacidad: ' + ${mesa.capacidad} + ' personas)'">
+                                            Mesa 1 (Capacidad: 4 personas)
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                                <a th:href="@{/cliente/home}" class="btn btn-outline-secondary me-md-2">
+                                    <i class="fas fa-times"></i> Cancelar
+                                </a>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="fas fa-calendar-check"></i> Crear Reserva
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

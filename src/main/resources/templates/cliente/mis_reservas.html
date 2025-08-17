@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sabor Gourmet - Mis Reservas</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+<body class="bg-light">
+    <!-- Navigation Bar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-success">
+        <div class="container">
+            <a class="navbar-brand" th:href="@{/cliente/home}">
+                <i class="fas fa-utensils"></i> Sabor Gourmet
+            </a>
+            <div class="navbar-nav ms-auto">
+                <span class="navbar-text me-3">
+                    <i class="fas fa-user"></i> 
+                    <span th:text="${session.usuario?.nombre}">Cliente</span>
+                </span>
+                <a class="nav-link" th:href="@{/logout}">
+                    <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        <!-- Breadcrumb -->
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                    <a th:href="@{/cliente/home}">
+                        <i class="fas fa-home"></i> Inicio
+                    </a>
+                </li>
+                <li class="breadcrumb-item active">
+                    <i class="fas fa-calendar"></i> Mis Reservas
+                </li>
+            </ol>
+        </nav>
+
+        <!-- Page Header -->
+        <div class="row">
+            <div class="col-12">
+                <div class="card bg-success text-white mb-4">
+                    <div class="card-body">
+                        <h1 class="card-title">
+                            <i class="fas fa-calendar"></i> Mis Reservas
+                        </h1>
+                        <p class="card-text">Gestiona tus reservas en Sabor Gourmet</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success/Error Messages -->
+        <div th:if="${mensaje}" class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i>
+            <span th:text="${mensaje}">Mensaje de éxito</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <div th:if="${error}" class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-triangle"></i>
+            <span th:text="${error}">Mensaje de error</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+
+        <!-- New Reservation Button -->
+        <div class="row mb-3">
+            <div class="col-12">
+                <a th:href="@{/reservas/nueva}" class="btn btn-success">
+                    <i class="fas fa-calendar-plus"></i> Nueva Reserva
+                </a>
+            </div>
+        </div>
+
+        <!-- Reservations Table -->
+        <div class="card shadow">
+            <div class="card-header bg-white">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-list"></i> Lista de Reservas
+                </h5>
+            </div>
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-dark">
+                            <tr>
+                                <th scope="col">#</th>
+                                <th scope="col">
+                                    <i class="fas fa-calendar"></i> Fecha
+                                </th>
+                                <th scope="col">
+                                    <i class="fas fa-clock"></i> Hora
+                                </th>
+                                <th scope="col">
+                                    <i class="fas fa-table"></i> Mesa
+                                </th>
+                                <th scope="col">
+                                    <i class="fas fa-users"></i> Personas
+                                </th>
+                                <th scope="col">
+                                    <i class="fas fa-info-circle"></i> Estado
+                                </th>
+                                <th scope="col">
+                                    <i class="fas fa-cog"></i> Acciones
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr th:if="${reservas == null or #lists.isEmpty(reservas)}">
+                                <td colspan="7" class="text-center text-muted py-4">
+                                    <i class="fas fa-calendar fa-2x mb-2 d-block"></i>
+                                    No tienes reservas registradas
+                                </td>
+                            </tr>
+                            <tr th:each="reserva, iterStat : ${reservas}" th:if="${reservas != null and not #lists.isEmpty(reservas)}">
+                                <th scope="row" th:text="${iterStat.count}">1</th>
+                                <td th:text="${#temporals.format(reserva.fecha, 'dd/MM/yyyy')}">01/01/2025</td>
+                                <td th:text="${#temporals.format(reserva.hora, 'HH:mm')}">20:00</td>
+                                <td>
+                                    <span class="badge bg-info" th:text="'Mesa ' + ${reserva.mesa.numero}">Mesa 1</span>
+                                </td>
+                                <td th:text="${reserva.numeroPersonas}">4</td>
+                                <td>
+                                    <span class="badge" 
+                                          th:classappend="${reserva.estado == 'ACTIVA'} ? 'bg-success' : 'bg-danger'"
+                                          th:text="${reserva.estado}">
+                                        ACTIVA
+                                    </span>
+                                </td>
+                                <td>
+                                    <form th:if="${reserva.estado == 'ACTIVA'}" 
+                                          th:action="@{/reservas/cancelar/{id}(id=${reserva.id})}" 
+                                          method="post" 
+                                          style="display: inline;"
+                                          onsubmit="return confirm('¿Estás seguro de que deseas cancelar esta reserva?')">
+                                        <button type="submit" class="btn btn-sm btn-outline-danger">
+                                            <i class="fas fa-times"></i> Cancelar
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
