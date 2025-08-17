@@ -30,7 +30,7 @@ public class UsuarioService {
             cliente.setNombre("cliente");
             cliente.setContrasena("cliente");
             cliente.setRol("Cliente");
-            usuarioRepository.save(cliente);
+            usuarioRepository.save(cliente);}
         }
 
     // Create User
@@ -50,4 +50,6 @@ public class UsuarioService {
     // Get All Users
     public List<Usuario> obtenerTodosLosUsuarios() {
         return usuarioRepository.findAll();
+
     }
+}
